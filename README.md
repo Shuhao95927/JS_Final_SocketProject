@@ -9,4 +9,13 @@ I want to simulate the chaos and interference of information overload. (How indi
 
 ```Bash
 npm run devStart #type this code into terminal to run this project.
+```
 
+## Problem
+
+## Video
+
+#### Iteration 1 
+[![scene A](img/s1.png)](https://youtu.be/2RM8t_q-i24)
+
+#### Iteration 2
