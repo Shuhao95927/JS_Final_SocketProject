@@ -7,19 +7,19 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.10.2/p5.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.10.2/addons/p5.sound.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.14.2/matter.min.js"></script>
 
         <link rel="stylesheet" href="css/style.css">
     </head>
     <body>
-        <h1>Socket Test Project</h1>
-
+        <h1 id="title">Interference Chat-Box</h1>
+        <p id="subTitle">
+            In this project, Users can interfere with the canvas of other users by creating new cursor flocks and text bubbles.
+            Participants can interfere with each other. Their behaviors have a real-time influence on others. <br>
+            
         <div id = "message-container">
         </div>
 
-        <div id = "textValue-container">    
-        </div>
-
-        
         <form id = "send-container">
             <input type = "text" id = "message-input" placeholder=" Type something ">
             <button type = "submit" id = "send-button">SEND</button>

@@ -1,5 +1,101 @@
 $bgColor: #cccccc;
 
-body{
-    background: $bgColor;
+@font-face{
+    font-family: Prompt-Regular;
+    src: url('../font/Prompt-Regular.ttf');
 }
+
+@font-face{
+    font-family: Prompt-ExtraLight;
+    src: url('../font/Prompt-ExtraLight.ttf');
+}
+
+body {
+    padding: 0;
+    margin: 0;
+}
+
+button{
+
+    background-color: black;
+    font-family: Prompt-Regular;
+    color: white;
+    padding:5px;
+    height:35px;
+    width: 80px;
+    display: block;
+    font-size: 15px;
+    border-radius: 3px;
+}
+  
+button:hover{
+    background-color: rgb(0, 102, 255);
+    color: white;
+}
+
+#title{
+    font-family: Prompt-Regular;
+    font-size: 30px;
+    color: black;
+    margin-left: 20px;
+    margin-top: 20px;
+    display: block;
+    width: 20%;
+
+}
+
+#subTitle{
+    font-family: Prompt-Regular;
+    font-size: 10px;
+    color: rgb(67, 67, 67);
+    margin-left: 20px;
+    display: block;
+    width: 17%;
+}
+
+#message-input {
+    width: 100px;
+    height:30px;
+    color:rgb(23, 23, 23);
+    font-size: 12px;
+    font-family: Prompt;  
+    border-top-style: hidden;
+    border-right-style: hidden;
+    border-left-style: hidden;
+    border-bottom-style: groove;
+    background-color:transparent;
+
+}
+
+#message-container{
+    
+    font-family: Prompt-ExtraLight;
+    font-size: 7px;
+    width: 20%;
+    max-width: 500px;
+    max-height: 500px;
+    margin-left: 20px;
+    display: block;
+
+}
+
+#message-container div {
+    color:rgb(0, 102, 255);
+}
+
+#message-container div:nth-child(2n) {
+    color:rgb(167, 167, 167);
+}
+
+#send-container {
+    position: fixed;
+    padding-bottom: 50px;
+    bottom: 0;
+    background-color: white;
+    display: flex;
+    margin-left: 88%;
+  }
+
+  #message-input {
+    flex-grow: 1;
+  }

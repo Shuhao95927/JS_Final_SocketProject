@@ -149,11 +149,23 @@ class Boid {
 const flock = [];
 const flock2 = [];
 
-//box setting
+//physical setting
 let textBoxs = [];
+let textBoxsS = [];
 let storedTexts = [];
 let sendCount = -1;
 let xoff1, xoff2;
+
+let Engine = Matter.Engine,
+    World = Matter.World,
+    Bodies = Matter.Bodies;
+
+let engine;
+let world;
+// let boxTexts = [];
+// let boxTextsFromServer = [];
+
+var ground;
 
 //basic setting
 let mainPage;
@@ -182,7 +194,6 @@ messageForm.addEventListener('submit', e => {
 }) 
 
 submitButton.addEventListener('click',createBox);
-submitButton.addEventListener('click',changeNoise);
 
 //------------------------------------------------------------
 function preload(){
@@ -194,6 +205,18 @@ function setup(){
     mainPage = createCanvas(windowWidth, windowHeight);
     mainPage.position(0,0);
     mainPage.style("z-index",-1);
+
+    //physical world building
+    engine = Engine.create(); 
+    world = engine.world;
+    Engine.run(engine);
+
+    var options = {
+        isStatic: true
+    }
+
+    ground = Bodies.rectangle(width/2,height-10,width,100,options);
+    World.add(world,ground);
     
     //socket
     socket = io.connect('http://localhost:3000');
@@ -205,6 +228,7 @@ function setup(){
     socket.on('chat-message',data => {
         appendMessage(`${data.name}:${data.message}`)
         // storedMessage(`${data.message}`)
+        textBoxsFromServer(`${data.name}:${data.message}`);
     })
 
     socket.on('user-connected',name => {
@@ -262,10 +286,13 @@ function draw(){
     }
 
     for (var i=0; i<textBoxs.length; i++){
-        textBoxs[i].showBlue(posX,posY);
+        textBoxs[i].show();
     }
-    fill(255,100,100);
-    // rect(posX,height/2,30,30);
+
+    for (var i=0; i<textBoxsS.length; i++){
+        textBoxsS[i].showFromServer();
+    }
+
 
 }
 
@@ -285,30 +312,83 @@ function appendMessage(message){
 
 //create text box
 function createBox(){
-    textBoxs.push(new Box(random(0,width/2),random(0,height/2)));
+    textBoxs.push(new Box(random(width/1.5,width/4.5),random(-10,10)));
 }
 
-function changeNoise(){
-    xoff1 = random(0,1000);
-    xoff2 = random(1000,2000);
-    console.log(xoff1,xoff2);
+function textBoxsFromServer(message){
+    textBoxsS.push(new Box(random(width/1.5,width/4.5),random(-10,10)));
 }
 
-function Box(x, y){
-    
-    var n = int(random(1,storedTexts.length));
-    // var nlength = int(textWidth(storedTexts[n]));
-    
-    this.showBlue = function(posX,posY){
-        rectMode(CENTER);
-        noStroke();
-        fill(50,100,255,200);
-        rect(posX+x,posY+y, storedTexts[n].length * 20,50,10);
-
-        fill(0);
-        textAlign(CENTER);
-        textSize(25);
-        text(storedTexts[n],posX+x,posY+y+10);
+function Box(x, y){ 
+    var options = {
+        friction:1,
+        frictionAir:0.1,
+        restitution:1,
+        density:0.1      
     }
+    var n = int(random(1,storedTexts.length));
+    var nl = int(textWidth(storedTexts[n]));
+  
+    var j = int(random(0,storedTexts.length));
+    var jl = int(textWidth(storedTexts[j]));
 
-}
+    this.body = Bodies.rectangle(x,y,nl*2.5,50,options);
+  
+    World.add(world,this.body);
+  
+    this.show = function(){
+        var pos = this.body.position;
+        var angle = this.body.angle;
+
+        push();
+  
+        noStroke();
+  
+        translate(pos.x,pos.y);
+        rotate(angle);
+        rectMode(CENTER);
+        
+        //real physical body
+        //fill(255,100,100,30);
+        //rect(0,0,nl*2.5,50);
+  
+        fill(50,100,255,200);
+        rect(0,0,storedTexts[n].length * 17,50,10);
+  
+        textAlign(CENTER);
+        fill(255);
+        textSize(25);
+        text(storedTexts[n],0, 8);  
+        pop();
+    }
+  
+    this.showFromServer = function(){
+  
+      var pos = this.body.position;
+      var angle = this.body.angle;
+     
+      push();
+  
+      noStroke();
+  
+      translate(pos.x,pos.y);
+      rotate(angle);
+      rectMode(CENTER);
+      
+      //real physical body
+      //fill(100,255,100,255);
+      //rect(0,0,jl*2.5,50);
+  
+      fill(100,200);
+      rect(0,0,storedTexts[j].length * 17,50,10);
+  
+      textAlign(CENTER);
+      fill(255);
+      textSize(25);
+      text(storedTexts[j],0, 8); //change the value here!! Rtts
+  
+      pop();
+  
+    }
+  
+  }

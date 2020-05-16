@@ -4,11 +4,23 @@
 const flock = [];
 const flock2 = [];
 
-//box setting
+//physical setting
 let textBoxs = [];
+let textBoxsS = [];
 let storedTexts = [];
 let sendCount = -1;
 let xoff1, xoff2;
+
+let Engine = Matter.Engine,
+    World = Matter.World,
+    Bodies = Matter.Bodies;
+
+let engine;
+let world;
+// let boxTexts = [];
+// let boxTextsFromServer = [];
+
+var ground;
 
 //basic setting
 let mainPage;
@@ -37,7 +49,6 @@ messageForm.addEventListener('submit', e => {
 }) 
 
 submitButton.addEventListener('click',createBox);
-submitButton.addEventListener('click',changeNoise);
 
 //------------------------------------------------------------
 function preload(){
@@ -49,6 +60,18 @@ function setup(){
     mainPage = createCanvas(windowWidth, windowHeight);
     mainPage.position(0,0);
     mainPage.style("z-index",-1);
+
+    //physical world building
+    engine = Engine.create(); 
+    world = engine.world;
+    Engine.run(engine);
+
+    var options = {
+        isStatic: true
+    }
+
+    ground = Bodies.rectangle(width/2,height-10,width,100,options);
+    World.add(world,ground);
     
     //socket
     socket = io.connect('http://localhost:3000');
@@ -60,6 +83,7 @@ function setup(){
     socket.on('chat-message',data => {
         appendMessage(`${data.name}:${data.message}`)
         // storedMessage(`${data.message}`)
+        textBoxsFromServer(`${data.name}:${data.message}`);
     })
 
     socket.on('user-connected',name => {
@@ -117,10 +141,13 @@ function draw(){
     }
 
     for (var i=0; i<textBoxs.length; i++){
-        textBoxs[i].showBlue(posX,posY);
+        textBoxs[i].show();
     }
-    fill(255,100,100);
-    // rect(posX,height/2,30,30);
+
+    for (var i=0; i<textBoxsS.length; i++){
+        textBoxsS[i].showFromServer();
+    }
+
 
 }
 
@@ -140,11 +167,9 @@ function appendMessage(message){
 
 //create text box
 function createBox(){
-    textBoxs.push(new Box(random(0,width/2),random(0,height/2)));
+    textBoxs.push(new Box(random(width/1.5,width/4.5),random(-10,10)));
 }
 
-function changeNoise(){
-    xoff1 = random(0,1000);
-    xoff2 = random(1000,2000);
-    console.log(xoff1,xoff2);
+function textBoxsFromServer(message){
+    textBoxsS.push(new Box(random(width/1.5,width/4.5),random(-10,10)));
 }
